@@ -3,6 +3,12 @@ import { useState } from 'react'
 // The range of possible values is [0, max - 1]
 const getRandomInt = (max) => Math.floor(Math.random() * max); 
 
+const VoteButton = ({handleVote}) => {
+  return (
+    <button onClick={handleVote}>vote</button>
+  )
+}
+
 const NextButton = ({handleNextButton}) => {
   return (
     <button onClick={handleNextButton}>next anecdote</button>
@@ -22,14 +28,24 @@ const App = () => {
   ]
   
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 })
 
   const handleNextButton = () => setSelected(getRandomInt(anecdotes.length))
+  
+  const copy = { ...points }
+  const handleVote = (anecdoteIndex) => {
+    copy[anecdoteIndex] += 1
+    setPoints(copy)
+  }
   
   return (
     <div>
       <p>{anecdotes[selected]}</p>
       <div>
+        <p>has {points[selected]} votes</p>
+        <VoteButton handleVote={() => handleVote(selected)} />
         <NextButton handleNextButton={handleNextButton} />
+        <p>debug: {JSON.stringify(points)}</p>
       </div>
     </div>
   )
