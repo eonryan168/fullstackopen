@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+const Header = ({text}) => <h2>{text}</h2>
+
 // The range of possible values is [0, max - 1]
 const getRandomInt = (max) => Math.floor(Math.random() * max); 
 
@@ -12,6 +14,15 @@ const VoteButton = ({handleVote}) => {
 const NextButton = ({handleNextButton}) => {
   return (
     <button onClick={handleNextButton}>next anecdote</button>
+  )
+}
+
+const Anecdote = ({index, votes, anecdotes}) => {
+  return (
+    <div>
+      <p>{anecdotes[index]}</p>
+      <p>has {votes} votes</p>
+    </div>
   )
 }
 
@@ -37,16 +48,20 @@ const App = () => {
     copy[anecdoteIndex] += 1
     setPoints(copy)
   }
+
+  const maxValue = Math.max(...Object.values(points))
+  const indexOfMaxAnecdote = Number(Object.keys(points).find(key => points[key] === maxValue));
   
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
+      <Header text="Anecdote of the day" />
+      <Anecdote index={selected} votes={points[selected]} anecdotes={anecdotes} />
       <div>
-        <p>has {points[selected]} votes</p>
         <VoteButton handleVote={() => handleVote(selected)} />
         <NextButton handleNextButton={handleNextButton} />
-        <p>debug: {JSON.stringify(points)}</p>
       </div>
+      <Header text="Anecdote with most votes wins" />
+      <Anecdote index={indexOfMaxAnecdote} votes={maxValue} anecdotes={anecdotes} />
     </div>
   )
 }
