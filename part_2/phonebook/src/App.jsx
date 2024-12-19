@@ -11,15 +11,31 @@ const App = () => {
     setNewName(event.target.value)
   }
 
+  const checkDuplicate = () => {
+    const duplicateTrue = persons.some(person => {
+      // console.log(`person.name ${person.name}`);
+      // console.log(`newName ${newName}`);
+      return person.name === newName; 
+    });
+    // console.log(`duplicateTrue ${duplicateTrue}`);
+    return duplicateTrue;
+  };
+
   const addName = (event) => {
     event.preventDefault()
-    console.log(event.target)
+    // console.log(event.target)
+    // console.log(`newName ${newName}`)
     const nameToAdd = {name: newName}
-    console.log(nameToAdd)
+    // console.log(nameToAdd)
 
-    setPersons(persons.concat(nameToAdd)) //because of async nature of setPersons, 
+    if (checkDuplicate() === true) {
+      alert(`${newName} is already added to the phonebook`)
+      setNewName("")
+    } else {
+      setPersons(persons.concat(nameToAdd)) //because of async nature of setPersons, 
                                           //console.log(persons) show the state before the
-    setNewName("")
+      setNewName("")
+    }
   }
 
   return (
@@ -35,7 +51,8 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map(person => <p key={person.name} style={{ margin: 0, padding: 0 }}>{person.name}</p>)}
-      {/* <div>debug: {newName}</div> */}
+      <div>debug: {newName}</div>
+
     </div>
   )
 }
