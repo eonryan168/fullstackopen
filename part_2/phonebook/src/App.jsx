@@ -1,5 +1,7 @@
-import { use } from 'react'
 import { useState } from 'react'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -22,15 +24,6 @@ const App = () => {
     setNumber(event.target.value)
   }
 
-  // const handleFilter = (e)  => {
-  //   // console.log(persons)
-  //   // console.log(e.target.value)
-  //   console.log(persons.filter((person) => ((person.name).toLowerCase()).includes(e.target.value.toLowerCase())))
-    
-  //   setFilteredPersons(persons.filter((person) => ((person.name).toLowerCase()).includes(e.target.value.toLowerCase())))
-
-  // }
-
   const handleFilter = (e) => {
     const filterValue = e.target.value.toLowerCase();
     if (filterValue === '') {
@@ -44,7 +37,6 @@ const App = () => {
       );
     }
   };
-
 
   const checkDuplicate = () => {
     const duplicateTrue = persons.some(person => {
@@ -78,29 +70,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          filter shown with <input onChange={(e) => handleFilter(e)}/>
-        </div>
-      </form>
+      <Filter handleFilter={handleFilter}/>
       <h2>add a new</h2>
-      <form onSubmit={addDetails}> 
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input type='tel' value={number} onChange={handleNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm 
+        newName={newName}
+        number={number}
+        addDetails={addDetails}
+        handleNameChange={handleNameChange}
+        handleNumber={handleNumber}
+      />
       <h2>Numbers</h2>
-      {filteredPersons.map((person) => (
-        <p key={person.name} style={{ margin: 0, padding: 0 }}>
-          {person.name} {person.number}
-        </p>
-      ))}
+      <Persons filteredPersons={filteredPersons} />
       <div>debug: {newName} {number}</div>
 
     </div>
