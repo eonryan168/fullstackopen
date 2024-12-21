@@ -1,11 +1,16 @@
+import { use } from 'react'
 import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    // { name: 'Arto Hellas' }
-  ]) 
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
   const [newName, setNewName] = useState('')
   const [number, setNumber] = useState('')
+  const [filteredPersons, setFilteredPersons] = useState(persons)
 
   const handleNameChange = (event) => {
     // console.log(event.target)
@@ -16,6 +21,30 @@ const App = () => {
     // console.log(event.target)
     setNumber(event.target.value)
   }
+
+  // const handleFilter = (e)  => {
+  //   // console.log(persons)
+  //   // console.log(e.target.value)
+  //   console.log(persons.filter((person) => ((person.name).toLowerCase()).includes(e.target.value.toLowerCase())))
+    
+  //   setFilteredPersons(persons.filter((person) => ((person.name).toLowerCase()).includes(e.target.value.toLowerCase())))
+
+  // }
+
+  const handleFilter = (e) => {
+    const filterValue = e.target.value.toLowerCase();
+    if (filterValue === '') {
+      setFilteredPersons(persons);
+      // console.log(persons)
+    } else {
+      setFilteredPersons(
+        persons.filter((person) =>
+          person.name.toLowerCase().includes(filterValue)
+        )
+      );
+    }
+  };
+
 
   const checkDuplicate = () => {
     const duplicateTrue = persons.some(person => {
@@ -49,6 +78,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <form>
+        <div>
+          filter shown with <input onChange={(e) => handleFilter(e)}/>
+        </div>
+      </form>
+      <h2>add a new</h2>
       <form onSubmit={addDetails}> 
         <div>
           name: <input value={newName} onChange={handleNameChange} />
@@ -61,7 +96,11 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person => <p key={person.name} style={{ margin: 0, padding: 0 }}>{person.name} {person.number}</p>)}
+      {filteredPersons.map((person) => (
+        <p key={person.name} style={{ margin: 0, padding: 0 }}>
+          {person.name} {person.number}
+        </p>
+      ))}
       <div>debug: {newName} {number}</div>
 
     </div>
