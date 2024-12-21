@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,11 +13,11 @@ const App = () => {
 
   useEffect(() => {
     // console.log("Effect start")
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data)
-        setFilteredPersons(response.data) //filteredPersons is initialized with the same data as persons after fetching
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+        setFilteredPersons(initialPersons) //filteredPersons is initialized with the same data as persons after fetching
       })  
   }, [])
   // console.log(`after ${JSON.stringify(persons)}`)
@@ -68,12 +69,12 @@ const App = () => {
       setNewName("")
     } else {
       
-      axios
-        .post("http://localhost:3001/persons", detailsToAdd)
-        .then(response => {
+      personService
+        .createPerson(detailsToAdd)
+        .then(newPerson => {
           // console.log(` this is response ${JSON.stringify(response.data)}`)
-          setPersons(persons.concat(response.data)) //because of async nature of setPersons, 
-                                              //console.log(persons) show the state before the     
+          setPersons(persons.concat(newPerson)) //because of async nature of setPersons, 
+                                                //console.log(persons) show the state before the     
           setNewName("")
           setNumber("")
         })
