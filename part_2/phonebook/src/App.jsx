@@ -60,17 +60,24 @@ const App = () => {
     // console.log(event.target)
     // console.log(`newName ${newName}`)
     const detailsToAdd = {name: newName, number: number}
-    console.log(detailsToAdd)
+    // console.log(detailsToAdd)
     // console.log(persons)
 
     if (checkDuplicate() === true) {
       alert(`${newName} is already added to the phonebook`)
       setNewName("")
     } else {
-      setPersons(persons.concat(detailsToAdd)) //because of async nature of setPersons, 
-                                              //console.log(persons) show the state before the
-      setNewName("")
-      setNumber("")
+      
+      axios
+        .post("http://localhost:3001/persons", detailsToAdd)
+        .then(response => {
+          // console.log(` this is response ${JSON.stringify(response.data)}`)
+          setPersons(persons.concat(response.data)) //because of async nature of setPersons, 
+                                              //console.log(persons) show the state before the     
+          setNewName("")
+          setNumber("")
+        })
+
     }
   }
 
