@@ -17,10 +17,15 @@ const App = () => {
       .getAll()
       .then(initialPersons => {
         setPersons(initialPersons)
-        setFilteredPersons(initialPersons) //filteredPersons is initialized with the same data as persons after fetching
       })  
   }, [])
   // console.log(`after ${JSON.stringify(persons)}`)
+
+  // filteredPersons changes everytime persons changed so that numbers rendered
+  // are based on persons
+  useEffect(() => {
+    setFilteredPersons(persons)
+  }, [persons])
 
   const handleNameChange = (event) => {
     // console.log(event.target)
@@ -45,6 +50,19 @@ const App = () => {
       );
     }
   };
+
+  const handleDelete = (id) => {
+    const person = persons.find(person => person.id === id)
+
+    if (confirm(`Delete ${person.name}?`)) {
+      personService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+          setFilteredPersons(filteredPersons.filter(person => person.id !== id))
+      })
+    }
+  }
 
   const checkDuplicate = () => {
     const duplicateTrue = persons.some(person => {
@@ -95,7 +113,7 @@ const App = () => {
         handleNumber={handleNumber}
       />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons filteredPersons={filteredPersons} handleDelete={handleDelete}/> 
       <div>debug: {newName} {number}</div>
 
     </div>
