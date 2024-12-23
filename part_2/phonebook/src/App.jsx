@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -63,7 +62,22 @@ const App = () => {
       })
     }
   }
+  
+  const checkNumber = () => {
+    const person = persons.find(person => {
+      // console.log(`person.name ${person.name}`);
+      // console.log(`newName ${newName}`);
+      return person.name === newName; 
+    });
+    
+    if (person.number === number) {
+      return true
+    } else {
+      return false
+    }
+  }
 
+  // check if the name is already in the phonebook
   const checkDuplicate = () => {
     const duplicateTrue = persons.some(person => {
       // console.log(`person.name ${person.name}`);
@@ -82,11 +96,38 @@ const App = () => {
     // console.log(detailsToAdd)
     // console.log(persons)
 
-    if (checkDuplicate() === true) {
+    if (checkDuplicate() === true && checkNumber() === true) {
       alert(`${newName} is already added to the phonebook`)
       setNewName("")
-    } else {
-      
+    } 
+
+    else if (checkDuplicate() === true && checkNumber() === false) {
+      if (confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
+        const findTheObj = persons.find(person => {
+          if (person.name === newName) {
+            return person
+          } 
+        });
+
+        const whatsMyID = findTheObj.id
+        // console.log(`whats my id ${JSON.stringify(whatsMyID)}`)
+        personService
+          .updatePerson(whatsMyID, {...detailsToAdd, id: whatsMyID})
+          .then((updatedPerson) => {
+            // replace the changed object to the one with the update number
+            const updatedPersons = persons.map((person) =>
+              person.id === whatsMyID ? updatedPerson : person
+            );
+
+            setPersons(updatedPersons)
+            setFilteredPersons(updatedPersons)
+            setNewName("")
+            setNumber("")
+        })
+      } 
+    }
+
+    else {
       personService
         .createPerson(detailsToAdd)
         .then(newPerson => {
