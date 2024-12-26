@@ -3,8 +3,9 @@ const Notification = ({ message }) => {
     return null
   }
 
+  const style = message.toLowerCase().includes("error") ? "error" : "notification";
   return (
-    <div className='notification'>
+    <div className={style}>
       {message}
     </div>
   )

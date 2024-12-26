@@ -12,6 +12,7 @@ const App = () => {
   const [filteredPersons, setFilteredPersons] = useState(persons)
   const [notificationMsg, setNotificationMsg] = useState(null)
 
+
   useEffect(() => {
     // console.log("Effect start")
     personService
@@ -132,6 +133,17 @@ const App = () => {
               setNotificationMsg(null)
             }, 1500)
         })
+          .catch(error => {
+            console.log(`the error ${error}`);
+            setNewName("")
+            setNumber("")
+            setNotificationMsg(
+              `ERROR: the contact was already deleted from the phonebook`
+            )
+            setTimeout(() => {
+              setNotificationMsg(null)
+            }, 1500)
+          })
       } 
     }
 
