@@ -1,11 +1,15 @@
 const express = require('express')
-const logger = require('morgan')
+const morgan = require('morgan')
 
 const app = express()
 
-app.use(express.json())
-app.use(logger('tiny'));
+morgan.token('customLog', function (req, res) { 
+  return JSON.stringify({"name": req.body.name, "number": req.body.number}) 
+})
 
+app.use(express.json())
+app.use(morgan('tiny'));
+app.use(morgan(':customLog'));
 
 let persons = [
   { 
